@@ -1,0 +1,23 @@
+{
+  "name": "logseq-open-in-code",
+  "version": "0.0.1",
+  "main": "dist/index.html",
+  "author": "©Logseq",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build"
+  },
+  "dependencies": {
+    "@popperjs/core": "^2.9.1",
+    "@logseq/libs": "^0.0.1-alpha.26",
+    "vue": "^3.0.4"
+  },
+  "devDependencies": {
+    "@vue/compiler-sfc": "^3.0.4",
+    "vite": "^1.0.0-rc.13"
+  },
+  "logseq": {
+    "id": "rebornix-logseq-open-in-code",
+    "icon": "./icon.png"
+  }
+}
