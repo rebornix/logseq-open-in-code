@@ -14,14 +14,14 @@
 <script>
 function openConfig(name) {
   logseq.App.getCurrentGraph().then(graph => {
-        let folderUrl = graph.url.replace('logseq_local_', 'vscode-insiders://file/');
+        let folderUrl = graph.url.replace('logseq_local_', 'vscode://file/');
         window.open(folderUrl + '/logseq/' + name);
     });
 }
 
 function openGraph() {
     logseq.App.getCurrentGraph().then(graph => {
-        let folderUrl = graph.url.replace('logseq_local_', 'vscode-insiders://file/');
+        let folderUrl = graph.url.replace('logseq_local_', 'vscode://file/');
         window.open(folderUrl);
     });
 }
@@ -37,7 +37,7 @@ function openPageInVSCode() {
             ]`).then(matches => {
                 if (matches && matches.length > 0) {
                     const file = matches[0][0];
-                    window.open(`vscode-insiders://file/${file}`);
+                    window.open(`vscode://file/${file}`);
                 } else {
                     // openGraph();
                 }
