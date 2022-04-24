@@ -63,4 +63,14 @@ function main () {
 }
 
 // bootstrap
-logseq.ready(createModel()).then(main)
+logseq
+.useSettingsSchema([{
+    key: 'distro',
+    type: 'enum',
+    title: 'VS Code distro',
+    description: 'Open the files in either VS Code Stable or Insiders',
+    default: 'stable',
+    enumChoices: ['stable', 'insiders'],
+    enumPicker: 'select'
+}])
+.ready(createModel()).then(main)
