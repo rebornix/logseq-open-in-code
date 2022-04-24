@@ -9,12 +9,12 @@
   },
   "dependencies": {
     "@popperjs/core": "^2.9.1",
-    "@logseq/libs": "^0.0.1-alpha.26",
-    "vue": "^3.0.4"
+    "@logseq/libs": "^0.0.2",
+    "vue": "^3.2.33"
   },
   "devDependencies": {
-    "@vue/compiler-sfc": "^3.0.4",
-    "vite": "^1.0.0-rc.13"
+    "vite": "^2.9.5",
+    "@vitejs/plugin-vue": "2.0.0"
   },
   "logseq": {
     "id": "rebornix-logseq-open-in-code",

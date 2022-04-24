@@ -1,5 +1,13 @@
+import vue from '@vitejs/plugin-vue'
+
 export default {
-  base: './',
-  optimizeDeps: {
-  },
+    base: './',
+    plugins: [
+        vue()
+    ],
+    optimizeDeps: {
+        plugins: [
+            vue()
+        ]
+    }
 }
