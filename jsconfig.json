@@ -6,7 +6,8 @@
     },
     "typeAcquisition": {
         "include": [
-            "./node_modules/@logseq/libs/index.d.ts"
+            "./node_modules/@logseq/libs/index.d.ts",
+            "./src/typings/"
         ]
     }
 }
