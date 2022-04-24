@@ -18,6 +18,7 @@
   },
   "logseq": {
     "id": "rebornix-logseq-open-in-code",
-    "icon": "./icon.png"
+    "icon": "./icon.png",
+    "title": "Open in VS Code"
   }
 }
