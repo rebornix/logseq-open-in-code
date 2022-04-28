@@ -1,5 +1,5 @@
 <template>
-  <div class="container-wrap" @click="_onClickOutside">
+  <div class="container-wrap" v-bind:class="{ lspdark: opts.isDark }" @click="_onClickOutside">
     <div
       class="container-inner shadow-lg"
       v-if="ready"
@@ -72,17 +72,19 @@ export default {
       left: 0,
       top: 0,
       currentPage: false,
-      opts: {},
+      opts: {
+        isDark: false
+      },
     };
   },
 
   mounted() {
     logseq.App.getUserConfigs().then(
-      (c) => (this.opts[`is-dark`] = c.preferredThemeMode === "dark")
+      (c) => (this.opts.isDark = c.preferredThemeMode === "dark")
     );
 
     logseq.App.onThemeModeChanged(({ mode }) => {
-      this.opts[`is-dark`] = mode === "dark";
+      this.opts.isDark = mode === "dark";
     });
 
     logseq.once("ui:visible:changed", ({ visible }) => {
