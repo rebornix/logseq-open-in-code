@@ -5,7 +5,7 @@
       v-if="ready"
       :style="{ left: left + 'px', top: top + 'px' }"
     >
-      <div class="_opener" @click="_onClickOpenCurrentPage">
+      <div class="_opener" v-if="currentPage" @click="_onClickOpenCurrentPage">
         Edit current page
       </div>
       <div class="_opener" @click="_onClickOpenConfig">Edit config.edn</div>
@@ -71,6 +71,7 @@ export default {
       ready: false,
       left: 0,
       top: 0,
+      currentPage: false,
       opts: {},
     };
   },
@@ -88,6 +89,15 @@ export default {
       visible && (this.ready = true);
     });
 
+    const checkCurrentPage = () => {
+      logseq.Editor.getCurrentPage().then((currentPage) => {
+      if (currentPage && currentPage.file) {
+        this.currentPage = true;
+      } else {
+        this.currentPage = false;
+      }});
+    }
+
     logseq.on("ui:visible:changed", ({ visible }) => {
       if (visible) {
         const key = logseq.baseInfo.id;
@@ -97,8 +107,15 @@ export default {
         const rect = el.getBoundingClientRect();
         this.left = rect.left - 50;
         this.top = rect.top + 30;
+        checkCurrentPage();
       }
     });
+
+    logseq.App.onRouteChanged(({ path }) => {
+      checkCurrentPage();
+    });
+
+    checkCurrentPage();
   },
 
   methods: {
