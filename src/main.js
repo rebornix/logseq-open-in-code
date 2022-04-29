@@ -6,9 +6,9 @@ import './index.css'
 /**
  * user model
  */
-function createModel () {
+function createModel() {
   return {
-    openVSCodePicker () {
+    openVSCodePicker() {
       logseq.showMainUI()
     },
   }
@@ -17,7 +17,7 @@ function createModel () {
 /**
  * app entry
  */
-function main () {
+function main() {
   logseq.setMainUIInlineStyle({
     position: 'fixed',
     zIndex: 11,
@@ -64,7 +64,7 @@ function main () {
 
 // bootstrap
 logseq
-.useSettingsSchema([{
+  .useSettingsSchema([{
     key: 'distro',
     type: 'enum',
     title: 'VS Code distro',
@@ -72,5 +72,5 @@ logseq
     default: 'stable',
     enumChoices: ['stable', 'insiders'],
     enumPicker: 'select'
-}])
-.ready(createModel()).then(main)
+  }])
+  .ready(createModel()).then(main)
