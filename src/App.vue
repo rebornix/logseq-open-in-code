@@ -135,7 +135,7 @@ export default {
       if (visible) {
         const key = logseq.baseInfo.id;
         const el = top.document.querySelector(
-          `div[data-injected-ui=open-in-code--${key}]`
+          `div[data-injected-ui=rebornix-logseq-open-in-code--${key}]`
         );
         const rect = el.getBoundingClientRect();
         this.left = rect.left - 50;
