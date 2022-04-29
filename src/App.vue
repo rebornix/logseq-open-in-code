@@ -1,5 +1,9 @@
 <template>
-  <div class="container-wrap" v-bind:class="{ lspdark: opts.isDark }" @click="_onClickOutside">
+  <div
+    class="container-wrap"
+    v-bind:class="{ lspdark: opts.isDark }"
+    @click="_onClickOutside"
+  >
     <div
       class="container-inner shadow-lg"
       v-if="ready"
@@ -18,49 +22,70 @@
 </template>
 
 <script>
-
 function generateUrl(path) {
   const { distro } = logseq.settings;
-  const protocol = distro === 'stable' ? 'vscode' : 'vscode-insiders';
+  const protocol = distro === "stable" ? "vscode" : "vscode-insiders";
   return `${protocol}://file/` + path;
 }
 
-function openConfig(name) {
-  logseq.App.getCurrentGraph().then((graph) => {
-    window.open(generateUrl(graph.url.replace("logseq_local_", "") + "/logseq/" + name));
-  });
+async function openConfig(name) {
+  const graph = await logseq.App.getCurrentGraph();
+  window.open(
+    generateUrl(graph.url.replace("logseq_local_", "") + "/logseq/" + name)
+  );
 }
 
-function openGraph() {
-  logseq.App.getCurrentGraph().then((graph) => {
-    window.open(generateUrl(graph.url.replace("logseq_local_", "")));
-
-  });
+async function openGraph() {
+  const graph = await logseq.App.getCurrentGraph();
+  window.open(generateUrl(graph.url.replace("logseq_local_", "")));
 }
 
-function openPageInVSCode() {
-  logseq.Editor.getCurrentPage().then((currentPage) => {
-    if (currentPage && currentPage.file) {
-      const fileId = currentPage.file.id;
-      logseq.DB.datascriptQuery(
-        `[:find ?file
+async function getAnsetorPageOfCurrentBlock() {
+  const block = await logseq.Editor.getCurrentBlock();
+  return block?.page;
+}
+
+async function findFile(fileId) {
+  const matches = await logseq.DB.datascriptQuery(
+    `[:find ?file
                 :where
                 [?b :file/path ?file]
                 [(== ?b ${fileId})]
             ]`
-      ).then((matches) => {
-        if (matches && matches.length > 0) {
-          const file = matches[0][0];
-          window.open(generateUrl(file));
-        } else {
-          // openGraph();
-        }
-      });
-    } else {
-      // TODO: find ansestor which is a page
-      // openGraph();
+  );
+
+  if (matches && matches.length > 0) {
+    const file = matches[0][0];
+    return file;
+  } else {
+    return null;
+  }
+}
+
+async function openPageInVSCode() {
+  const currentPage = await logseq.Editor.getCurrentPage();
+  if (currentPage && currentPage.file) {
+    const fileId = currentPage.file.id;
+    const file = await findFile(fileId);
+
+    if (file) {
+      window.open(generateUrl(file));
+      return;
     }
-  });
+  }
+
+  const ansetor = await getAnsetorPageOfCurrentBlock();
+  if (ansetor) {
+    const page = await logseq.Editor.getPage(ansetor.id);
+    if (page && page.file) {
+      const fileId = page.file.id;
+      const file = await findFile(fileId);
+      if (file) {
+        window.open(generateUrl(file));
+        return;
+      }
+    }
+  }
 }
 
 export default {
@@ -73,7 +98,7 @@ export default {
       top: 0,
       currentPage: false,
       opts: {
-        isDark: false
+        isDark: false,
       },
     };
   },
@@ -91,14 +116,20 @@ export default {
       visible && (this.ready = true);
     });
 
-    const checkCurrentPage = () => {
-      logseq.Editor.getCurrentPage().then((currentPage) => {
+    const checkCurrentPage = async () => {
+      const currentPage = await logseq.Editor.getCurrentPage();
+
       if (currentPage && currentPage.file) {
         this.currentPage = true;
       } else {
-        this.currentPage = false;
-      }});
-    }
+        const ansestor = await getAnsetorPageOfCurrentBlock();
+        if (ansestor) {
+          this.currentPage = true;
+        } else {
+          this.currentPage = false;
+        }
+      }
+    };
 
     logseq.on("ui:visible:changed", ({ visible }) => {
       if (visible) {
