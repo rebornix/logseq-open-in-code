@@ -133,10 +133,7 @@ export default {
 
     logseq.on("ui:visible:changed", ({ visible }) => {
       if (visible) {
-        const key = logseq.baseInfo.id;
-        const el = top.document.querySelector(
-          `div[data-injected-ui=rebornix-logseq-open-in-code--${key}]`
-        );
+        const el = top.document.querySelector(`a#open-in-code-anchor`);
         const rect = el.getBoundingClientRect();
         this.left = rect.left - 50;
         this.top = rect.top + 30;
