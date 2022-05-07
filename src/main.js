@@ -41,7 +41,7 @@ function main() {
   }
   
   div[data-injected-ui=logseq-open-in-code--${key}] a.button {
-    padding: 6px 6px 0 6px;
+    padding: 2px 6px 0 6px;
   }
 
   div[data-injected-ui=logseq-open-in-code--${key}] iconfont {
