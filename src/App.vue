@@ -25,7 +25,7 @@
 function generateUrl(path) {
   const { distro } = logseq.settings;
   const protocol = distro === "stable" ? "vscode" : "vscode-insiders";
-  return `${protocol}://file/` + path + "?windowId=_blank";
+  return `${protocol}://file/` + encodeURIComponent(path) + "?windowId=_blank";
 }
 
 async function openConfig(name) {
