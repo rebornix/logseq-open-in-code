@@ -90,6 +90,30 @@ async function openPageInVSCode() {
   }
 }
 
+async function registerShortcuts() {
+  logseq.App.registerCommandPalette({
+    key: `Open_current_page_in_default_editor`,
+    label: "Open current page in default editor",
+    keybinding: {
+      binding: logseq.settings.key_open_page,
+      mode: "global",
+    }
+  },
+    openPageInVSCode
+  );
+
+  logseq.App.registerCommandPalette({
+    key: `Open_graph_folder_in_default_editor`,
+    label: "Open graph folder in default editor",
+    keybinding: {
+      binding: logseq.settings.key_open_graph,
+      mode: "global",
+    }
+  },
+    openGraph
+  );
+}
+
 export default {
   name: "App",
 
@@ -148,6 +172,8 @@ export default {
     });
 
     checkCurrentPage();
+
+    registerShortcuts();
   },
 
   methods: {

@@ -113,5 +113,20 @@ logseq
     default: 'stable',
     enumChoices: ['stable', 'insiders'],
     enumPicker: 'select'
-  }])
+  },
+  {
+    key: 'key_open_page',
+    type: 'string',
+    title: 'Shortcut: open current page',
+    description: 'Shorcut to open the current page in VS Code (default `ctrl+o`)',
+    default: 'mod+o',
+  },
+  {
+    key: 'key_open_graph',
+    type: 'string',
+    title: 'Shortcut: open graph folder',
+    description: 'Shorcut to open graph folder in VS Code (default `ctrl+shift+o`)',
+    default: 'mod+shift+o',
+  }],
+  )
   .ready(createModel()).then(main)
