@@ -108,10 +108,10 @@ logseq
   .useSettingsSchema([{
     key: 'distro',
     type: 'enum',
-    title: 'VS Code distro',
-    description: 'Open the files in either VS Code Stable or Insiders',
+    title: 'URL Schema',
+    description: 'Open the files in either VS Code Stable, Insiders or VS Codium',
     default: 'stable',
-    enumChoices: ['stable', 'insiders'],
+    enumChoices: ['stable', 'insiders', 'vs codium'],
     enumPicker: 'select'
   },
   {

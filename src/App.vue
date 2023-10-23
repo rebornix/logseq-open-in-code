@@ -1,14 +1,6 @@
 <template>
-  <div
-    class="container-wrap"
-    v-bind:class="{ lspdark: opts.isDark }"
-    @click="_onClickOutside"
-  >
-    <div
-      class="container-inner shadow-lg"
-      v-if="ready"
-      :style="{ left: left + 'px', top: top + 'px' }"
-    >
+  <div class="container-wrap" v-bind:class="{ lspdark: opts.isDark }" @click="_onClickOutside">
+    <div class="container-inner shadow-lg" v-if="ready" :style="{ left: left + 'px', top: top + 'px' }">
       <div class="_opener" v-if="currentPage" @click="_onClickOpenCurrentPage">
         Edit current page
       </div>
@@ -24,7 +16,7 @@
 <script>
 function generateUrl(path) {
   const { distro } = logseq.settings;
-  const protocol = distro === "stable" ? "vscode" : "vscode-insiders";
+  const protocol = distro === "stable" ? "vscode" : distro === "insiders" ? "vscode-insiders" : "vscodium";
   return `${protocol}://file/` + encodeURIComponent(path) + "?windowId=_blank";
 }
 
