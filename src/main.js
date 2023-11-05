@@ -113,6 +113,14 @@ logseq
     default: 'stable',
     enumChoices: ['stable', 'insiders', 'vs codium'],
     enumPicker: 'select'
+  }, {
+    key: 'window',
+    type: 'enum',
+    title: 'VS Code Window',
+    description: 'Open pages in which VS Code window?',
+    default: 'stable',
+    enumChoices: ['Open a new window', 'In the graph folder', 'Reuse last active window'],
+    enumPicker: 'select'
   },
   {
     key: 'key_open_line',

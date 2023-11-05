@@ -14,11 +14,18 @@
 </template>
 
 <script>
+const __debug = false;
 
-function generateUrl(path, line_num = 0) {
+function generateUrl(path, line_num = 0, new_window = true) {
   const { distro } = logseq.settings;
   const protocol = distro === "stable" ? "vscode" : distro === "insiders" ? "vscode-insiders" : "vscodium";
-  return `${protocol}://file/` + encodeURIComponent(path) + `:${line_num}:0` + "?windowId=_blank";
+
+  const line = line_num ? `:${line_num}:0` : "";
+
+  const windowId = new_window ? "?windowId=_blank" : "";
+
+
+  return `${protocol}://file/` + encodeURIComponent(path) + line + windowId;
 }
 
 async function openConfig(name) {
@@ -28,9 +35,13 @@ async function openConfig(name) {
   );
 }
 
+function if_new_window() {
+  return (logseq.settings.window.includes("new"));
+}
+
 async function openGraph() {
   const graph = await logseq.App.getCurrentGraph();
-  window.open(generateUrl(graph.url.replace("logseq_local_", "")));
+  window.open(generateUrl(graph.url.replace("logseq_local_", ""), 0, true));
 }
 
 async function getAncestorPageOfCurrentBlock() {
@@ -64,7 +75,7 @@ async function openPageLineInVSCode(line_number) {
     const file = await findFile(fileId);
 
     if (file) {
-      window.open(generateUrl(file, line_number));
+      window.open(generateUrl(file, line_number, if_new_window()));
       return;
     }
   }
@@ -76,15 +87,18 @@ async function openPageLineInVSCode(line_number) {
       const fileId = page.file.id;
       const file = await findFile(fileId);
       if (file) {
-        window.open(generateUrl(file, line_number));
+        window.open(generateUrl(file, line_number, if_new_window()));
         return;
       }
     }
   }
 }
 
-function openPageInVSCode() {
-  return openPageLineInVSCode(0);
+async function openPageInVSCode() {
+  if (logseq.settings.window.includes("graph")) {
+    await openGraph();
+  }
+  await openPageLineInVSCode(0);
 }
 
 function reorder_children(children) {
@@ -105,33 +119,57 @@ function reorder_children(children) {
 
 // To count the line number of a block in correct order, we need to reorder the children of the block
 function count_line_in_block(block, line, reorder = false) {
-  let count = 0;
-  let found_line = false;
+  let count = block.content.split('\n').length;
+  let found_line = block.id === line.id;
+
+  if (found_line) {
+    return { lineCount: count, hasLine: found_line };
+  }
+
+  if (block.children.length === 0) {
+    if (__debug) {
+      console.log(block);
+    }
+    return { lineCount: count, hasLine: found_line };
+  }
+
 
   if (block.children.length > 0) {
+    // iterate over children blocks 
     if (reorder) {
       reorder_children(block.children);
     }
-    block.children.forEach(child => {
-      let search_subblock = count_line_in_block(child, line);
-      if (!found_line) {
-        count += search_subblock.lineCount;
-        found_line = found_line || search_subblock.hasLine;
+
+    for (let index = 0; index < block.children.length; index++) {
+      const child = block.children[index];
+      // count the line number of each child block
+      if (found_line) {
+        break;
       }
-    });
-    return { lineCount: block.content.split('\n').length + count, hasLine: block.id === line.id || found_line };
-  } else {
-    return { lineCount: block.content.split('\n').length, hasLine: block.id === line.id };
+      let search_subblock = count_line_in_block(child, line);
+      if (__debug) {
+        console.log(child.content, "old count", count, "inc", search_subblock.lineCount, search_subblock.hasLine);
+      }
+      count += search_subblock.lineCount;
+      found_line = search_subblock.hasLine;
+    }
+    if (__debug) {
+      console.log(block.content, count, found_line);
+    }
+    return { lineCount: count, hasLine: found_line };
   }
 }
 
 async function openCurrentLine() {
 
+  if (logseq.settings.window.includes("graph")) {
+    await openGraph();
+  }
+
   let count = 0;
-
   let curb = await logseq.Editor.getCurrentBlock();
-
   let all_blocks = await logseq.Editor.getCurrentPageBlocksTree();
+
   if (all_blocks.length === 1 && !('content' in all_blocks[0])) {
     // It seems possible to get a page by name but not id. Strange
     const page = await logseq.Editor.getPage(curb?.page.id);
@@ -140,17 +178,10 @@ async function openCurrentLine() {
 
   for (let index = 0; index < all_blocks.length; index++) {
     const block = all_blocks[index];
-    let subcount = count_line_in_block(block, curb);
+    let subcount = count_line_in_block(block, curb, true);
+    count += subcount.lineCount
     if (subcount.hasLine) {
-      // If found current line, it's compulsory to count the line number of the block in correct order between its siblings
-      subcount = count_line_in_block(block, curb, true);
-      count += Math.floor(subcount.lineCount / 2);
-      // this leads to the end of the block:
-      // count += subcount.lineCount 
-      // TODO get the exact line number? 
       break;
-    } else {
-      count += subcount.lineCount;
     }
   }
 
