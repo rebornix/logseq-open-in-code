@@ -115,6 +115,13 @@ logseq
     enumPicker: 'select'
   },
   {
+    key: 'key_open_line',
+    type: 'string',
+    title: 'Shortcut: open current line',
+    description: 'Shortcut to open the current line in VS Code (default `ctrl+alt+o`)',
+    default: 'mod+alt+o',
+  },
+  {
     key: 'key_open_page',
     type: 'string',
     title: 'Shortcut: open current page',

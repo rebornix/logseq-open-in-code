@@ -14,10 +14,11 @@
 </template>
 
 <script>
-function generateUrl(path) {
+
+function generateUrl(path, line_num = 0) {
   const { distro } = logseq.settings;
   const protocol = distro === "stable" ? "vscode" : distro === "insiders" ? "vscode-insiders" : "vscodium";
-  return `${protocol}://file/` + encodeURIComponent(path) + "?windowId=_blank";
+  return `${protocol}://file/` + encodeURIComponent(path) + `:${line_num}:0` + "?windowId=_blank";
 }
 
 async function openConfig(name) {
@@ -32,7 +33,7 @@ async function openGraph() {
   window.open(generateUrl(graph.url.replace("logseq_local_", "")));
 }
 
-async function getAnsetorPageOfCurrentBlock() {
+async function getAncestorPageOfCurrentBlock() {
   const block = await logseq.Editor.getCurrentBlock();
   return block?.page;
 }
@@ -56,33 +57,117 @@ async function findFile(fileId) {
   }
 }
 
-async function openPageInVSCode() {
+async function openPageLineInVSCode(line_number) {
   const currentPage = await logseq.Editor.getCurrentPage();
   if (currentPage && currentPage.file) {
     const fileId = currentPage.file.id;
     const file = await findFile(fileId);
 
     if (file) {
-      window.open(generateUrl(file));
+      window.open(generateUrl(file, line_number));
       return;
     }
   }
 
-  const ansetor = await getAnsetorPageOfCurrentBlock();
+  const ansetor = await getAncestorPageOfCurrentBlock();
   if (ansetor) {
     const page = await logseq.Editor.getPage(ansetor.id);
     if (page && page.file) {
       const fileId = page.file.id;
       const file = await findFile(fileId);
       if (file) {
-        window.open(generateUrl(file));
+        window.open(generateUrl(file, line_number));
         return;
       }
     }
   }
 }
 
+function openPageInVSCode() {
+  return openPageLineInVSCode(0);
+}
+
+function reorder_children(children) {
+  let id_chains = children.map(child => child.left);
+
+  children.sort((a, b) => {
+    let indexA = id_chains.indexOf(a.left);
+    let indexB = id_chains.indexOf(b.left);
+    if (indexA < indexB) {
+      return -1;
+    } else if (indexA > indexB) {
+      return 1;
+    } else {
+      return 0;
+    }
+  });
+}
+
+// To count the line number of a block in correct order, we need to reorder the children of the block
+function count_line_in_block(block, line, reorder = false) {
+  let count = 0;
+  let found_line = false;
+
+  if (block.children.length > 0) {
+    if (reorder) {
+      reorder_children(block.children);
+    }
+    block.children.forEach(child => {
+      let search_subblock = count_line_in_block(child, line);
+      if (!found_line) {
+        count += search_subblock.lineCount;
+        found_line = found_line || search_subblock.hasLine;
+      }
+    });
+    return { lineCount: block.content.split('\n').length + count, hasLine: block.id === line.id || found_line };
+  } else {
+    return { lineCount: block.content.split('\n').length, hasLine: block.id === line.id };
+  }
+}
+
+async function openCurrentLine() {
+
+  let count = 0;
+
+  let curb = await logseq.Editor.getCurrentBlock();
+
+  let all_blocks = await logseq.Editor.getCurrentPageBlocksTree();
+  if (all_blocks.length === 1 && !('content' in all_blocks[0])) {
+    // It seems possible to get a page by name but not id. Strange
+    const page = await logseq.Editor.getPage(curb?.page.id);
+    all_blocks = await logseq.Editor.getPageBlocksTree(page.name);
+  }
+
+  for (let index = 0; index < all_blocks.length; index++) {
+    const block = all_blocks[index];
+    let subcount = count_line_in_block(block, curb);
+    if (subcount.hasLine) {
+      // If found current line, it's compulsory to count the line number of the block in correct order between its siblings
+      subcount = count_line_in_block(block, curb, true);
+      count += Math.floor(subcount.lineCount / 2);
+      // this leads to the end of the block:
+      // count += subcount.lineCount 
+      // TODO get the exact line number? 
+      break;
+    } else {
+      count += subcount.lineCount;
+    }
+  }
+
+  await openPageLineInVSCode(count);
+}
+
 async function registerShortcuts() {
+  logseq.App.registerCommandPalette({
+    key: `Open_current_line_in_default_editor`,
+    label: "Open current line in default editor",
+    keybinding: {
+      binding: logseq.settings.key_open_line,
+      mode: "global",
+    }
+  },
+    openCurrentLine
+  );
   logseq.App.registerCommandPalette({
     key: `Open_current_page_in_default_editor`,
     label: "Open current page in default editor",
@@ -140,7 +225,7 @@ export default {
       if (currentPage && currentPage.file) {
         this.currentPage = true;
       } else {
-        const ansestor = await getAnsetorPageOfCurrentBlock();
+        const ansestor = await getAncestorPageOfCurrentBlock();
         if (ansestor) {
           this.currentPage = true;
         } else {
