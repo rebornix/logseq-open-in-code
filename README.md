@@ -5,20 +5,22 @@ Open and edit Logseq pages and config files in VS Code
 ![demo](./demo.gif)
 
 
-### Usage
-Default shortcuts 
-- open graph: `mod+shift+o`
-- open current page: `mod+o` 
-- open current block: `mod+alt+o`  
+## How to Use
 
-Or type names in the command palette to see corresponding commands.
+The application provides default keyboard shortcuts for ease of use:
+- To open the graph, use `mod+shift+o`.
+- To open the current page, use `mod+o`.
+- To open the current block, use `mod+alt+o`.
 
-Notice also a existent keybinding `ctrl+d ctrl+a` in Logseq which opens current page in default app.
- 
-Any application, as long as it supports url scheme, could be added as an option. Feel free to tweak `generateUrl` function in `src/App.vue`.
+Alternatively, you can enter the command names in the command palette to execute the corresponding commands.
 
-### Development
+Please note that Logseq has an existing keybinding `ctrl+d ctrl+a` which opens the current page in the default app.
 
-- `npm install` in terminal to install dependencies.
-- `npm run build` or `npm run watch` to build. 
-- `Load unpacked plugin` in Logseq Desktop client.
+Not just vscode, it is possible to open in any application that uses URL schemes. In the source code, you can modify the `generateUrl` function in `src/App.vue` to add more applications.
+
+## Development Instructions
+
+To set up the development environment:
+- Run `npm install` in the terminal to install the necessary dependencies.
+- Use `npm run build` or `npm run watch` to build the application.
+- Use the `Load unpacked plugin` option in the Logseq Desktop client to load the plugin.
