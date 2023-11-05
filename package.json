@@ -5,7 +5,8 @@
   "author": "rebornix",
   "scripts": {
     "dev": "vite",
-    "build": "vite build"
+    "build": "vite build",
+    "watch": "vite build --watch"
   },
   "dependencies": {
     "@popperjs/core": "^2.9.1",
