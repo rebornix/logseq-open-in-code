@@ -168,12 +168,18 @@ async function openCurrentLine() {
 
   let count = 0;
   let curb = await logseq.Editor.getCurrentBlock();
-  let all_blocks = await logseq.Editor.getCurrentPageBlocksTree();
+  if (__debug) {
+    console.log("current block", curb);
+  }
+  // let all_blocks = await logseq.Editor.getCurrentPageBlocksTree();
 
-  if (all_blocks.length === 1 && !('content' in all_blocks[0])) {
-    // It seems possible to get a page by name but not id. Strange
-    const page = await logseq.Editor.getPage(curb?.page.id);
-    all_blocks = await logseq.Editor.getPageBlocksTree(page.name);
+  // if (all_blocks.length === 1 && !('content' in all_blocks[0])) {
+  // It seems possible to get a page by name but not id. Strange
+  const page = await logseq.Editor.getPage(curb?.page.id);
+  let all_blocks = await logseq.Editor.getPageBlocksTree(page.name);
+  // }
+  if (__debug) {
+    console.log(all_blocks);
   }
 
   for (let index = 0; index < all_blocks.length; index++) {
