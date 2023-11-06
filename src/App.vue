@@ -177,9 +177,20 @@ async function openCurrentLine() {
   }
 
   for (let index = 0; index < all_blocks.length; index++) {
+    if (index === 0) {
+      // if the first block is a property block, trim it and count lines
+      let first_block = all_blocks[0].content.trim().split('\n');
+      if (first_block[0].includes("::")) {
+        count += first_block.length + 1;
+        continue;
+      }
+    }
     const block = all_blocks[index];
     let subcount = count_line_in_block(block, curb, true);
     count += subcount.lineCount
+    if (__debug) {
+      console.log("level 0", index, count);
+    }
     if (subcount.hasLine) {
       break;
     }
