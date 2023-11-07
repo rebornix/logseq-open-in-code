@@ -41,9 +41,13 @@ function if_new_window() {
   return (logseq.settings.window.includes("new"));
 }
 
-async function openGraph() {
+async function getGraph() {
   const graph = await logseq.App.getCurrentGraph();
-  window.open(generateUrl(graph.url.replace("logseq_local_", ""), 0, true));
+  return graph.url.replace("logseq_local_", "");
+}
+
+async function openGraph() {
+  window.open(generateUrl(await getGraph(), 0, true));
 }
 
 async function getAncestorPageOfCurrentBlock() {
