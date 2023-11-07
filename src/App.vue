@@ -71,16 +71,15 @@ async function findFile(fileId) {
 }
 
 async function openPageLineInVSCode(line_number) {
-  const currentPage = await logseq.Editor.getCurrentPage();
-  if (currentPage && currentPage.file) {
-    const fileId = currentPage.file.id;
-    const file = await findFile(fileId);
-
-    if (file) {
-      window.open(generateUrl(file, line_number, if_new_window()));
-      return;
-    }
-  }
+  // const currentPage = await logseq.Editor.getCurrentPage();
+  // if (currentPage && currentPage.file) {
+  //   const fileId = currentPage.file.id;
+  //   const file = await findFile(fileId);
+  //   if (file) {
+  //     window.open(generateUrl(file, line_number, if_new_window()));
+  //     return;
+  //   }
+  // }
 
   const ansetor = await getAncestorPageOfCurrentBlock();
   if (ansetor) {
