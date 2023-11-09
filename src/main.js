@@ -117,9 +117,9 @@ logseq
     key: 'window',
     type: 'enum',
     title: 'VS Code Window',
-    description: 'Open pages in which VS Code window?',
+    description: 'Where do you want to open the page?',
     default: 'stable',
-    enumChoices: ['Open a new window', 'In the graph folder', 'Reuse last active window'],
+    enumChoices: ['Always in a new window', 'In the graph folder or workspace', 'Reuse the last active window'],
     enumPicker: 'select'
   },
   {
