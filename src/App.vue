@@ -46,8 +46,25 @@ async function getGraph() {
   return graph.url.replace("logseq_local_", "");
 }
 
-async function openGraph() {
+async function getGraphWorkspace() {
+  const graph = await logseq.App.getCurrentGraph();
+  return graph.url.replace("logseq_local_", "") + `/${graph.name}.code-workspace`;
+}
+
+async function openGraphFolder() {
   window.open(generateUrl(await getGraph(), 0, true));
+}
+
+async function openGraphAsWorkspace() {
+  window.open(generateUrl(await getGraphWorkspace(), 0, true));
+}
+
+async function openGraph() {
+  if (logseq.settings.workspace == 'folder') {
+    await openGraphFolder();
+  } else {
+    await openGraphAsWorkspace();
+  }
 }
 
 async function getAncestorPageOfCurrentBlock() {
