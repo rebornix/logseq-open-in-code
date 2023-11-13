@@ -24,10 +24,7 @@ function generateUrl(path, line_num = 0, new_window = true) {
 
   const windowId = new_window ? "?windowId=_blank" : "";
 
-  // TODO remove in the next version of vscode 1.84.0
-  const _path = encodeURIComponent(path).replace((/^\/*/g), "");
-
-  return `${protocol}://file/` + _path + line + windowId;
+  return `${protocol}://file/` + path + line + windowId;
 }
 
 async function openConfig(name) {
