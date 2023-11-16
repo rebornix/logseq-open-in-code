@@ -24,6 +24,7 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: "14.x" # You might need to adjust this value to your own version
+          fetch-depth: 0
       - name: Build
         id: build
         run: |
@@ -35,6 +36,7 @@ jobs:
           mv dist ${{ env.PLUGIN_NAME }}
           zip -r ${{ env.PLUGIN_NAME }}.zip ${{ env.PLUGIN_NAME }}
           ls
+          git tag --sort version:refname | tail -n 1
           echo "tag_name=$(git tag --sort version:refname | tail -n 1)" >> $GITHUB_ENV
       - name: Create Release
         uses: ncipollo/release-action@v1
@@ -42,6 +44,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           VERSION: ${{ github.event.inputs.version }}
+          tag_name: ${{ github.event.inputs.version }}
         with:
           allowUpdates: true
           draft: false
