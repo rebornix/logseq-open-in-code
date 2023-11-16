@@ -2,6 +2,10 @@ name: Build plugin
 
 on:
   workflow_dispatch:
+    inputs:
+      version:
+        description: 'Tag to release'
+        required: true
   push:
     # Sequence of patterns matched against refs/tags
     tags:
