@@ -41,7 +41,7 @@ jobs:
         id: create_release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          VERSION: ${{ env.tag_name }}
+          VERSION: ${{ github.event.inputs.version }}
         with:
           allowUpdates: true
           draft: false
