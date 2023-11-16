@@ -1,11 +1,12 @@
 {
   "name": "logseq-open-in-code",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "main": "dist/index.html",
   "author": "rebornix",
   "scripts": {
     "dev": "vite",
-    "build": "vite build"
+    "build": "vite build",
+    "watch": "vite build --watch"
   },
   "dependencies": {
     "@popperjs/core": "^2.9.1",

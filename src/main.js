@@ -108,10 +108,38 @@ logseq
   .useSettingsSchema([{
     key: 'distro',
     type: 'enum',
-    title: 'VS Code distro',
-    description: 'Open the files in either VS Code Stable or Insiders',
+    title: 'URL Scheme',
+    description: 'Open the files in either VS Code Stable, Insiders or VS Codium',
     default: 'stable',
-    enumChoices: ['stable', 'insiders'],
+    enumChoices: ['stable', 'insiders', 'vs codium'],
     enumPicker: 'select'
-  }])
-  .ready(createModel()).then(main)
+  }, {
+    key: 'window',
+    type: 'enum',
+    title: 'VS Code Window',
+    description: 'Where do you want to open the page?',
+    default: 'stable',
+    enumChoices: ['Always in a new window', 'Reuse the last active window', 'In the graph folder', 'In the graph folder (as workspace)'],
+    enumPicker: 'select'
+  },
+  {
+    key: 'key_open_line',
+    type: 'string',
+    title: 'Shortcut: open current line',
+    description: 'Shortcut to open the current line in VS Code (default `ctrl+alt+o`)',
+    default: 'mod+alt+o',
+  },
+  {
+    key: 'key_open_page',
+    type: 'string',
+    title: 'Shortcut: open current page',
+    description: 'Shortcut to open the current page in VS Code (default `ctrl+o`)',
+    default: 'mod+o',
+  },
+  {
+    key: 'key_open_graph',
+    type: 'string',
+    title: 'Shortcut: open current graph',
+    description: 'Shortcut to open the current graph in VS Code (default `ctrl+shift+o`)',
+    default: 'mod+shift+o',
+  }]).ready(createModel()).then(main)
