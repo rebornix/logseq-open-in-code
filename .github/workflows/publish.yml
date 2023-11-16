@@ -35,13 +35,13 @@ jobs:
           mv dist ${{ env.PLUGIN_NAME }}
           zip -r ${{ env.PLUGIN_NAME }}.zip ${{ env.PLUGIN_NAME }}
           ls
-          echo "::set-output name=tag_name::$(git tag --sort version:refname | tail -n 1)"
+          echo "tag_name=$(git tag --sort version:refname | tail -n 1)" >> $GITHUB_ENV
       - name: Create Release
         uses: ncipollo/release-action@v1
         id: create_release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          VERSION: ${{ github.event_name == 'push' && github.ref || github.event.inputs.version }}
+          VERSION: ${{ env.tag_name }}
         with:
           allowUpdates: true
           draft: false
