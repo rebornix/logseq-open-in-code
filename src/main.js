@@ -119,7 +119,7 @@ logseq
     title: 'VS Code Window',
     description: 'Where do you want to open the page?',
     default: 'stable',
-    enumChoices: ['Always in a new window', 'In the graph folder or workspace', 'Reuse the last active window'],
+    enumChoices: ['Always in a new window', 'Reuse the last active window', 'In the graph folder', 'In the graph folder (as workspace)'],
     enumPicker: 'select'
   },
   {
@@ -142,14 +142,4 @@ logseq
     title: 'Shortcut: open current graph',
     description: 'Shortcut to open the current graph in VS Code (default `ctrl+shift+o`)',
     default: 'mod+shift+o',
-  }, {
-    key: 'workspace',
-    type: 'enum',
-    title: 'open workspace',
-    description: 'Open graph as folder or VSCode workspace. If you choose VSCode workspace, you need to create a workspace file `<graph_name>.code-workspace` in the graph folder.',
-    default: 'folder',
-    enumChoices: ['folder', 'VSCode workspace'],
-    enumPicker: 'select'
-  }],
-  )
-  .ready(createModel()).then(main)
+  }]).ready(createModel()).then(main)

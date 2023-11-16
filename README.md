@@ -1,26 +1,59 @@
 ## Open Logseq in VS Code
 
-Open and edit Logseq pages and config files in VS Code
+This plugin offers quick access of following in VS Code 
+- focused blocks or pages
+- configuration files
+- the graph folder
 
 ![demo](./demo.gif)
 
+VS Codium is also supported.
+ 
+## Usage
 
-## How to Use
+Use the following keyboard shortcuts:
+- `mod+shift+o`: Open graph
+- `mod+o`: Open current page
+- `mod+alt+o`: Open current block
 
-The application provides default keyboard shortcuts for ease of use:
-- To open the graph, use `mod+shift+o`.
-- To open the current page, use `mod+o`.
-- To open the current block, use `mod+alt+o`.
+You can also use the command palette to execute these commands.
 
-Alternatively, you can enter the command names in the command palette to execute the corresponding commands.
+Note: Logseq's `ctrl+d ctrl+a` shortcut opens the current page in the default app.
 
-Please note that Logseq has an existing keybinding `ctrl+d ctrl+a` which opens the current page in the default app.
+## Options
+### Editor Options
+Specify the version of VS Code (or, URL scheme) you're using. 
+- Stable : `vscode://file/`
+- Insider : `vscode-insiders://file/`
+- VS Codium : `vscodium://file/`
 
-Not just vscode, it is possible to open in any application that uses URL schemes. In the source code, you can modify the `generateUrl` function in `src/App.vue` to add more applications.
+Though not planed, this list can potentially be extended to other editors that support file URLs.
 
-## Development Instructions
+### Window options
+By default, a new windows will be opened. But sometimes it's preferable to avoid reopening a new windows for each file. So several options are provided.
 
-To set up the development environment:
-- Run `npm install` in the terminal to install the necessary dependencies.
-- Use `npm run build` or `npm run watch` to build the application.
-- Use the `Load unpacked plugin` option in the Logseq Desktop client to load the plugin.
+Choose where to open the specified file
+- In an independent new window
+- In the last focused window
+- In the graph folder
+- In the workspace (Experimental function. It only works when the file `<graph folder>/<graph_name>.code-workspace` exists. And it's only tested with the stable version)
+
+> Right now the path of the file `<graph_name>.code-workspace` has to be put in the graph folder. And it's highly recommended to enable automatic saving on focus change. 
+> ```json
+>{
+>	"folders": [
+>		{
+>			"path": "."
+>		}
+>	],
+>	"settings": {
+>		"files.autoSave": "onFocusChange", // recommended
+>	}
+>}
+> ```
+
+## Development
+
+- Install dependencies with `npm install`
+- Build the application using `npm run build` or `npm run watch`
+- Load the plugin in the Logseq Desktop client using the `Load unpacked plugin` option.
